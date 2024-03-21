@@ -23,8 +23,8 @@ docker exec -it guacamoledb bash
 ```
 Inside container:
 ```
-psql -U $GUACAMOLE_DB_USER -c "CREATE DATABASE $POSTGRES_NAME;"
-cat initdb.sql | psql -U $GUACAMOLE_DB_USER -d $POSTGRES_NAME
+psql -U $POSTGRES_USER -c "CREATE DATABASE $POSTGRES_DATABASE;"
+cat initdb.sql | psql -U $POSTGRES_USER -d $POSTGRES_DATABASE
 exit
 ```
 
