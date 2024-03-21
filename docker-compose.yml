@@ -1,0 +1,34 @@
+version: "3"
+services:
+  guacdb:
+    container_name: guacamoledb
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DATABASE: "${POSTGRES_NAME:-guacamole_db}"
+      POSTGRES_USER: "${GUACAMOLE_DB_USER:-guacamole_db_user}"
+      POSTGRES_PASSWORD: "${GUACAMOLE_DB_PASS:-weakpass}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  guacd:
+    container_name: guacd
+    image: guacamole/guacd
+    restart: unless-stopped
+  guacamole:
+    container_name: guacamole
+    image: guacamole/guacamole
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    environment:
+      GUACD_HOSTNAME: "guacd"
+      POSTGRES_HOSTNAME: "guacdb"
+      POSTGRES_DATABASE: "${POSTGRES_NAME:-guacamole_db}"
+      POSTGRES_USER: "${GUACAMOLE_DB_USER:-guacamole_db_user}"
+      POSTGRES_PASSWORD: "${GUACAMOLE_DB_PASS:-weakpass}"
+      # TOTP_ENABLED: "true"
+    depends_on:
+      - guacdb
+      - guacd
+volumes:
+  postgres_data: {}
