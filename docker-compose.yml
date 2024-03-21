@@ -10,10 +10,14 @@ services:
       POSTGRES_PASSWORD: "${GUACAMOLE_DB_PASS:-weakpass}"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - guacamole_network
   guacd:
     container_name: guacd
     image: guacamole/guacd
     restart: unless-stopped
+    networks:
+      - guacamole_network
   guacamole:
     container_name: guacamole
     image: guacamole/guacamole
@@ -30,5 +34,17 @@ services:
     depends_on:
       - guacdb
       - guacd
+    networks:
+      - guacamole_network
+
+networks:
+  guacamole_network:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: "2a01:4f9:2b:195d::/64"
+
 volumes:
   postgres_data: {}
